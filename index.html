@@ -7,6 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Supabase JS Client CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
   :root{
     --navy:#16204a;
@@ -17,10 +21,8 @@
     --red:#a83a2e;
     --red-bg:#fbeae7;
     --paper:#f4f5fb;
-    --white:#ffffff;
     --text:#20233a;
     --muted:#6b7089;
-    --radius:18px;
   }
   *{box-sizing:border-box;}
   body{
@@ -32,361 +34,77 @@
     justify-content:center;
     padding:24px 12px 60px;
   }
-  .phone{
-    width:100%;
-    max-width:420px;
-  }
+  .phone{ width:100%; max-width:420px; }
 
-  /* ---------- Header lembaga ---------- */
-  .agency-row{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:14px;
-    margin-bottom:16px;
-    flex-wrap:wrap;
-  }
-  .agency-row img{ height:34px; }
-  .agency-placeholder{
-    height:34px;
-    width:34px;
-    border-radius:50%;
-    background:var(--navy-2);
-    color:#fff;
-    font-size:10px;
-    font-weight:700;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    line-height:1.1;
-  }
+  /* Header */
+  .agency-row{ display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:16px; flex-wrap:wrap; }
+  .agency-placeholder{ height:34px; width:34px; border-radius:50%; background:var(--navy-2); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; text-align:center; }
 
-  /* ---------- Kartu utama ---------- */
-  .card{
-    background:var(--navy);
-    border-radius:28px;
-    padding:22px 18px 26px;
-    color:#fff;
-    box-shadow:0 20px 40px -18px rgba(22,32,74,.55);
-  }
-  .org-name{
-    font-size:12.5px;
-    font-weight:700;
-    letter-spacing:.2px;
-    opacity:.85;
-  }
-  .org-sub{
-    font-size:11px;
-    color:#aab2d8;
-    margin-top:2px;
-  }
-  .day-title{
-    font-size:28px;
-    font-weight:800;
-    margin:14px 0 2px;
-  }
-  .date-sub{
-    font-size:13px;
-    color:#c4cae8;
-    margin-bottom:16px;
-  }
+  /* Card */
+  .card{ background:var(--navy); border-radius:28px; padding:22px 18px 26px; color:#fff; box-shadow:0 20px 40px -18px rgba(22,32,74,.55); }
+  .org-name{ font-size:12.5px; font-weight:700; opacity:.85; }
+  .org-sub{ font-size:11px; color:#aab2d8; margin-top:2px; }
+  .day-title{ font-size:28px; font-weight:800; margin:14px 0 2px; }
+  .date-sub{ font-size:13px; color:#c4cae8; margin-bottom:16px; }
 
-  .food-photo{
-    width:100%;
-    aspect-ratio:4/3;
-    border-radius:16px;
-    object-fit:cover;
-    background:#0e1636 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%231b2454'/%3E%3C/svg%3E");
-    display:block;
-  }
+  .food-photo{ width:100%; aspect-ratio:4/3; border-radius:16px; object-fit:cover; background:#0e1636; display:block; }
 
-  .menu-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:14px;
-  }
-  .menu-item{
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:14px;
-    padding:10px 12px;
-  }
+  .menu-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .menu-item{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:10px 12px; }
   .menu-item.full{ grid-column:1 / -1; }
-  .menu-item .label{
-    font-size:10.5px;
-    color:#a9b0d6;
-    margin-bottom:3px;
-  }
-  .menu-item .value{
-    font-size:13.5px;
-    font-weight:600;
-    line-height:1.3;
-  }
+  .menu-item .label{ font-size:10.5px; color:#a9b0d6; margin-bottom:3px; }
+  .menu-item .value{ font-size:13.5px; font-weight:600; line-height:1.3; }
 
-  /* ---------- Tabel gizi ---------- */
-  .gizi-box{
-    margin-top:16px;
-    background:var(--navy-2);
-    border-radius:16px;
-    padding:14px 14px 8px;
-  }
-  .gizi-title{
-    font-size:11.5px;
-    font-weight:700;
-    color:#dfe3f7;
-    margin-bottom:10px;
-  }
-  table.gizi{
-    width:100%;
-    border-collapse:collapse;
-    font-size:13px;
-  }
-  table.gizi th{
-    text-align:right;
-    font-size:9.5px;
-    font-weight:700;
-    color:#aab2d8;
-    padding-bottom:8px;
-  }
+  /* Tabel Gizi */
+  .gizi-box{ margin-top:16px; background:var(--navy-2); border-radius:16px; padding:14px 14px 8px; }
+  .gizi-title{ font-size:11.5px; font-weight:700; color:#dfe3f7; margin-bottom:10px; }
+  table.gizi{ width:100%; border-collapse:collapse; font-size:13px; }
+  table.gizi th{ text-align:right; font-size:9.5px; font-weight:700; color:#aab2d8; padding-bottom:8px; }
   table.gizi th:first-child, table.gizi td:first-child{ text-align:left; }
   table.gizi th span{ display:block; font-weight:400; color:#8890b8; font-size:9px; }
-  table.gizi td{
-    padding:7px 0;
-    border-top:1px solid rgba(255,255,255,.08);
-  }
+  table.gizi td{ padding:7px 0; border-top:1px solid rgba(255,255,255,.08); }
   table.gizi td.label{ color:#c4cae8; font-size:11.5px; }
-  table.gizi td.num{
-    text-align:right;
-    font-weight:700;
-    color:var(--amber);
-    font-size:14.5px;
-  }
+  table.gizi td.num{ text-align:right; font-weight:700; color:var(--amber); font-size:14.5px; }
 
-  /* ---------- Pilih hari ---------- */
-  .week-row{
-    display:flex;
-    justify-content:space-between;
-    margin-top:16px;
-    gap:6px;
-  }
-  .day-btn{
-    flex:1;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:12px;
-    padding:8px 0;
-    text-align:center;
-    cursor:pointer;
-    color:#c4cae8;
-    transition:background .15s ease, color .15s ease;
-  }
+  /* Navigasi */
+  .week-row{ display:flex; justify-content:space-between; margin-top:16px; gap:6px; }
+  .day-btn{ flex:1; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 0; text-align:center; cursor:pointer; color:#c4cae8; }
   .day-btn .d-name{ font-size:9.5px; font-weight:700; }
   .day-btn .d-num{ font-size:13px; font-weight:700; margin-top:2px; }
-  .day-btn.active{
-    background:var(--amber);
-    color:var(--navy);
-    border-color:var(--amber);
-  }
-  .day-btn:disabled{ opacity:.35; cursor:default; }
+  .day-btn.active{ background:var(--amber); color:var(--navy); border-color:var(--amber); }
 
-  /* ---------- Peringatan ---------- */
-  .warning{
-    margin-top:16px;
-    background:var(--red-bg);
-    border:1px solid #f0c9c1;
-    border-radius:16px;
-    padding:14px 14px 12px;
-    color:#5a2018;
-  }
-  .warning-head{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:12.5px;
-    font-weight:800;
-    color:var(--red);
-    margin-bottom:10px;
-  }
-  .warning-head .icon{
-    width:20px; height:20px;
-    border-radius:50%;
-    background:var(--red);
-    color:#fff;
-    display:flex; align-items:center; justify-content:center;
-    font-size:12px; font-weight:800;
-  }
-  .warning ol{
-    margin:0; padding-left:18px;
-  }
-  .warning li{
-    font-size:12.5px;
-    line-height:1.5;
-    margin-bottom:8px;
-  }
-  .warning li b{ display:block; color:var(--red); font-size:12.5px; }
-  .warning li:last-child{ margin-bottom:0; }
+  /* Warning */
+  .warning{ margin-top:16px; background:var(--red-bg); border:1px solid #f0c9c1; border-radius:16px; padding:14px; color:#5a2018; }
+  .warning-head{ display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:800; color:var(--red); margin-bottom:10px; }
+  .warning-head .icon{ width:20px; height:20px; border-radius:50%; background:var(--red); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; }
+  .warning ol{ margin:0; padding-left:18px; }
+  .warning li{ font-size:12.5px; line-height:1.5; margin-bottom:8px; }
+  .warning li b{ display:block; color:var(--red); }
 
-  /* ---------- Footer ---------- */
-  .foot{
-    text-align:center;
-    margin-top:18px;
-    font-size:11px;
-    color:var(--muted);
-    line-height:1.6;
-  }
-  .foot b{ color:var(--text); }
-  .foot a{ color:var(--navy-3); text-decoration:none; }
+  /* Footer & Status */
+  .foot{ text-align:center; margin-top:18px; font-size:11px; color:var(--muted); line-height:1.6; }
+  .date-nav{ display:flex; align-items:center; justify-content:space-between; margin-top:14px; }
+  .date-nav button{ border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.07); color:#fff; width:42px; height:42px; border-radius:12px; cursor:pointer; font-size:18px; }
+  .date-center{ flex:1; text-align:center; font-size:11px; color:#c4cae8; }
+  .status-card{ margin-top:14px; border-radius:16px; padding:16px; background:#fff4d9; border:1px solid #f0d28c; color:#674500; }
+  .admin-link{ display:inline-block; margin-top:10px; padding:9px 13px; border-radius:10px; background:var(--navy); color:#fff !important; font-size:11px; text-decoration:none; }
+  .empty-photo{ display:flex; align-items:center; justify-content:center; text-align:center; min-height:220px; border-radius:16px; background:#0e1636; color:#aeb7df; padding:20px; font-size:13px; font-weight:700; }
+  .today-badge{ display:inline-flex; padding:4px 8px; border-radius:999px; background:rgba(242,169,59,.18); color:var(--amber); font-size:9px; font-weight:800; }
 
-  /* ---------- Status menu & navigasi tanggal ---------- */
-  .date-nav{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-    margin-top:14px;
-  }
-  .date-nav button{
-    border:1px solid rgba(255,255,255,.12);
-    background:rgba(255,255,255,.07);
-    color:#fff;
-    width:42px;
-    height:42px;
-    border-radius:12px;
-    cursor:pointer;
-    font-size:18px;
-    font-weight:800;
-  }
-  .date-nav button:disabled{opacity:.35;cursor:not-allowed}
-  .date-center{
-    flex:1;
-    text-align:center;
-    font-size:11px;
-    color:#c4cae8;
-  }
-  .status-card{
-    margin-top:14px;
-    border-radius:16px;
-    padding:16px;
-    background:#fff4d9;
-    border:1px solid #f0d28c;
-    color:#674500;
-  }
-  .status-card strong{
-    display:block;
-    font-size:13px;
-    margin-bottom:5px;
-  }
-  .status-card span{
-    display:block;
-    font-size:11.5px;
-    line-height:1.5;
-  }
-  .status-card .admin-hint{
-    margin-top:10px;
-    font-weight:700;
-  }
-  .status-card a{
-    color:#8b5d00;
-    font-weight:800;
-    text-decoration:none;
-  }
-  .empty-photo{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    min-height:220px;
-    border-radius:16px;
-    background:#0e1636;
-    color:#aeb7df;
-    padding:20px;
-    font-size:13px;
-    font-weight:700;
-  }
-  .today-badge{
-    display:inline-flex;
-    align-items:center;
-    gap:5px;
-    margin-left:6px;
-    padding:4px 8px;
-    border-radius:999px;
-    background:rgba(242,169,59,.18);
-    color:var(--amber);
-    font-size:9px;
-    font-weight:800;
-    vertical-align:middle;
-  }
-  .admin-link{
-    display:inline-block;
-    margin-top:10px;
-    padding:9px 13px;
-    border-radius:10px;
-    background:var(--navy);
-    color:#fff !important;
-    font-size:11px;
-  }
-
-
-  /* ---------- Penerima manfaat ---------- */
-  .beneficiary-box{
-    margin-top:16px;
-    background:#fff;
-    color:var(--text);
-    border-radius:16px;
-    padding:15px;
-  }
-  .beneficiary-title{
-    font-size:12px;
-    font-weight:800;
-    color:var(--navy);
-    margin-bottom:10px;
-  }
-  .beneficiary-list{
-    display:flex;
-    flex-direction:column;
-    gap:7px;
-  }
-  .beneficiary-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding:9px 10px;
-    background:#f5f6fa;
-    border-radius:10px;
-  }
-  .beneficiary-name{
-    font-size:10.5px;
-    font-weight:700;
-    line-height:1.3;
-  }
-  .beneficiary-count{
-    white-space:nowrap;
-    font-size:11px;
-    font-weight:800;
-    color:var(--navy);
-  }
-  .beneficiary-total{
-    display:flex;
-    justify-content:space-between;
-    margin-top:10px;
-    padding-top:10px;
-    border-top:1px solid #e2e4ec;
-    font-size:11.5px;
-    font-weight:800;
-    color:var(--navy);
-  }
-
+  /* Penerima Manfaat */
+  .beneficiary-box{ margin-top:16px; background:#fff; color:var(--text); border-radius:16px; padding:15px; }
+  .beneficiary-title{ font-size:12px; font-weight:800; color:var(--navy); margin-bottom:10px; }
+  .beneficiary-list{ display:flex; flex-direction:column; gap:7px; }
+  .beneficiary-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 10px; background:#f5f6fa; border-radius:10px; }
+  .beneficiary-name{ font-size:10.5px; font-weight:700; }
+  .beneficiary-count{ font-size:11px; font-weight:800; color:var(--navy); }
+  .beneficiary-total{ display:flex; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px solid #e2e4ec; font-size:11.5px; font-weight:800; color:var(--navy); }
 </style>
 </head>
 <body>
 
 <div class="phone">
-
-  <div class="agency-row" id="agencyRow">
-    <!-- Ganti dengan <img src="logo1.png"> dst kalau sudah punya file logo resmi -->
+  <div class="agency-row">
     <div class="agency-placeholder">BGN</div>
     <div class="agency-placeholder">SPPG</div>
     <div class="agency-placeholder">SLHS</div>
@@ -398,18 +116,15 @@
     <div class="org-sub" id="orgSub">Yayasan Riau Center Bhakti Negeri</div>
 
     <div class="day-title" id="dayTitle">Kamis <span id="todayBadge" class="today-badge">HARI INI</span></div>
-    <div class="date-sub" id="dateSub">10 September 2026</div>
+    <div class="date-sub" id="dateSub">-</div>
 
     <div class="date-nav">
-      <button id="prevDay" aria-label="Tanggal sebelumnya">‹</button>
+      <button id="prevDay">‹</button>
       <div class="date-center" id="dateNavText">Memuat tanggal...</div>
-      <button id="nextDay" aria-label="Tanggal berikutnya">›</button>
+      <button id="nextDay">›</button>
     </div>
 
-    <div id="photoWrap">
-      <img class="food-photo" id="foodPhoto" src="" alt="Foto menu hari ini">
-    </div>
-
+    <div id="photoWrap"></div>
     <div id="menuGrid" class="menu-grid"></div>
     <div id="menuStatus"></div>
 
@@ -439,8 +154,8 @@
     <div class="week-row" id="weekRow"></div>
 
     <div class="warning">
-      <div class="warning-head"><span class="icon">!</span> WAJIB DIPERHATIKAN &amp; DISOSIALISASIKAN</div>
-      <ol id="warningList"></ol>
+      <div class="warning-head"><span class="icon">!</span> WAJIB DIPERHATIKAN</div>
+      ol id="warningList"></ol>
     </div>
   </div>
 
@@ -449,13 +164,17 @@
     <span id="footYayasan">Yayasan Riau Center Bhakti Negeri</span> — Program Makan Bergizi Gratis<br>
     <a href="#" id="footLink">namakamu.github.io</a>
   </div>
-
 </div>
 
 <script>
 /* =========================================================
-   1. DATA — INI SATU-SATUNYA BAGIAN YANG PERLU KAMU EDIT
+   1. KONFIGURASI SUPABASE (Menggunakan Project Kamu)
    ========================================================= */
+const SUPABASE_URL = "https://rxxxbmskzyauclqheknc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_BlZfEnYPoetP_bCJsYRAYg_s7jyJ..."; // Silakan ganti dengan teks penuh dari tombol copy di layar kamu tadi
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const ORG = {
   nama: "SPPG TANGKERANG LABUAI 2",
   yayasan: "Yayasan Riau Center Bhakti Negeri",
@@ -472,63 +191,10 @@ const PENERIMA_MANFAAT = [
   { nama: "SEUTUH KASIH", porsi: 60 }
 ];
 
-/*
-  DATA MENU
-  ------------------------------------------------------------------
-  Format tanggal wajib YYYY-MM-DD.
-  Setiap tanggal dapat memiliki menu sendiri.
-  Jika tanggal belum memiliki data, halaman otomatis menampilkan:
-  "Menu belum di upload untuk hari ini"
-  dan pengunjung diarahkan ke halaman admin untuk upload.
-*/
-const MENU = {
-  "2026-09-10": {
-    foto: "https://placehold.co/600x450/0e1636/ffffff?text=Foto+Menu",
-    nasi: "Nasi Putih",
-    hewani: "Dimsum Ayam",
-    nabati: "Tempe Oreg",
-    sayur: "Sayur Bening Labu Kuning, Kacang Panjang",
-    buah: "Jeruk Madu Siam",
-    gizi: {
-      energi:      { kecil: 550, besar: 750 },
-      protein:     { kecil: 20.1, besar: 28.4 },
-      lemak:       { kecil: 15.13, besar: 25.03 },
-      karbohidrat: { kecil: 71.04, besar: 96.58 },
-      serat:       { kecil: 3.21, besar: 4.49 }
-    }
-  }
-
-  // Contoh:
-  // "2026-09-11": {
-  //   foto: "foto/jumat.jpg",
-  //   nasi: "Nasi Putih",
-  //   hewani: "Ayam ...",
-  //   nabati: "Tempe ...",
-  //   sayur: "Sayur ...",
-  //   buah: "Melon",
-  //   gizi: {
-  //     energi:{kecil:550,besar:750},
-  //     protein:{kecil:20,besar:28},
-  //     lemak:{kecil:15,besar:25},
-  //     karbohidrat:{kecil:71,besar:96},
-  //     serat:{kecil:3,besar:4}
-  //   }
-  // }
-};
-
 const PERINGATAN = [
-  {
-    judul: "Segera dimakan di sekolah",
-    isi: "Makanan wajib dikonsumsi paling lambat 4 jam setelah ompreng diterima, tanpa dimasak atau diolah ulang."
-  },
-  {
-    judul: "Jangan dibawa pulang",
-    isi: "Makanan yang dibawa pulang cepat basi dan berisiko menyebabkan sakit perut atau keracunan."
-  },
-  {
-    judul: "Ompreng dikembalikan ke petugas",
-    isi: "Setelah selesai makan, segera kembalikan ompreng dalam keadaan bersih ke petugas SPPG."
-  }
+  { judul: "Segera dimakan di sekolah", isi: "Makanan wajib dikonsumsi paling lambat 4 jam setelah ompreng diterima, tanpa dimasak atau diolah ulang." },
+  { judul: "Jangan dibawa pulang", isi: "Makanan yang dibawa pulang cepat basi dan berisiko menyebabkan sakit perut atau keracunan." },
+  { judul: "Ompreng dikembalikan ke petugas", isi: "Setelah selesai makan, segera kembalikan ompreng dalam keadaan bersih ke petugas SPPG." }
 ];
 
 const LABELS = {
@@ -548,15 +214,8 @@ function localDateKey(date){
   return `${y}-${m}-${d}`;
 }
 
-function parseDateKey(key){
-  const [y,m,d] = key.split("-").map(Number);
-  return new Date(y, m-1, d);
-}
-
 function formatDate(date){
-  return date.toLocaleDateString("id-ID", {
-    day:"numeric", month:"long", year:"numeric"
-  });
+  return date.toLocaleDateString("id-ID", { day:"numeric", month:"long", year:"numeric" });
 }
 
 function dayName(date){
@@ -564,53 +223,31 @@ function dayName(date){
 }
 
 function fmt(n){
-  return Number(n).toLocaleString("id-ID", {
+  return Number(n || 0).toLocaleString("id-ID", {
     minimumFractionDigits: n % 1 === 0 ? 0 : 2,
     maximumFractionDigits: 2
   });
 }
 
-function renderFooter(){
+function renderStaticInfo(){
   document.getElementById("orgName").textContent = ORG.nama;
   document.getElementById("orgSub").textContent = ORG.yayasan;
   document.getElementById("footOrg").textContent = ORG.nama;
   document.getElementById("footYayasan").textContent = ORG.yayasan;
 
-  const link = document.getElementById("footLink");
-  link.textContent = ORG.link;
-  link.href = ORG.link.startsWith("http") ? ORG.link : "https://" + ORG.link;
-}
-
-function renderBeneficiaries(){
   const list = document.getElementById("beneficiaryList");
-  const totalEl = document.getElementById("beneficiaryTotal");
-
-  list.innerHTML = "";
-
   let total = 0;
-
+  list.innerHTML = "";
   PENERIMA_MANFAAT.forEach(item => {
     total += Number(item.porsi) || 0;
-
-    const row = document.createElement("div");
-    row.className = "beneficiary-row";
-    row.innerHTML = `
-      <div class="beneficiary-name">${item.nama}</div>
-      <div class="beneficiary-count">${Number(item.porsi).toLocaleString("id-ID")} PORSI</div>
-    `;
-    list.appendChild(row);
+    list.innerHTML += `<div class="beneficiary-row"><div class="beneficiary-name">${item.nama}</div><div class="beneficiary-count">${item.porsi.toLocaleString("id-ID")} PORSI</div></div>`;
   });
+  document.getElementById("beneficiaryTotal").textContent = `${total.toLocaleString("id-ID")} PORSI`;
 
-  totalEl.textContent = `${total.toLocaleString("id-ID")} PORSI`;
-}
-
-function renderWarning(){
   const ol = document.getElementById("warningList");
   ol.innerHTML = "";
   PERINGATAN.forEach(p => {
-    const li = document.createElement("li");
-    li.innerHTML = `<b>${p.judul}</b>${p.isi}`;
-    ol.appendChild(li);
+    ol.innerHTML += `<li><b>${p.judul}</b>${p.isi}</li>`;
   });
 }
 
@@ -618,60 +255,61 @@ function renderDateNavigation(){
   const key = localDateKey(selectedDate);
   const todayKey = localDateKey(new Date());
 
-  document.getElementById("dayTitle").childNodes[0].nodeValue =
-    dayName(selectedDate) + " ";
-
-  document.getElementById("todayBadge").style.display =
-    key === todayKey ? "inline-flex" : "none";
-
+  document.getElementById("dayTitle").childNodes[0].nodeValue = dayName(selectedDate) + " ";
+  document.getElementById("todayBadge").style.display = key === todayKey ? "inline-flex" : "none";
   document.getElementById("dateSub").textContent = formatDate(selectedDate);
-  document.getElementById("dateNavText").textContent =
-    key === todayKey ? "Tanggal hari ini" : "Pilih tanggal menu";
-
-  document.getElementById("prevDay").disabled = false;
-  document.getElementById("nextDay").disabled = false;
+  document.getElementById("dateNavText").textContent = key === todayKey ? "Tanggal hari ini" : "Pilih tanggal menu";
 }
 
-function renderMenu(data){
+/* Fetch Data dari Supabase Database */
+async function fetchMenuFromSupabase(dateKey){
+  try {
+    const { data, error } = await supabaseClient
+      .from('menu_harian')
+      .select('*')
+      .eq('tanggal', dateKey)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Supabase fetch error:', error);
+    }
+    return data;
+  } catch (err) {
+    console.error('Unexpected error:', err);
+    return null;
+  }
+}
+
+async function renderMenu(){
   const photoWrap = document.getElementById("photoWrap");
   const grid = document.getElementById("menuGrid");
   const status = document.getElementById("menuStatus");
+  const body = document.getElementById("giziBody");
+
+  status.innerHTML = "<div class='status-card'>Memuat data menu...</div>";
+  grid.innerHTML = "";
+  body.innerHTML = "";
+
+  const key = localDateKey(selectedDate);
+  const data = await fetchMenuFromSupabase(key);
 
   status.innerHTML = "";
-  grid.innerHTML = "";
 
   if(!data){
-    photoWrap.innerHTML = `
-      <div class="empty-photo">
-        📋<br>
-        Menu untuk tanggal ini belum tersedia
-      </div>
-    `;
-
+    photoWrap.innerHTML = `<div class="empty-photo">📋<br>Menu untuk tanggal ini belum tersedia</div>`;
     grid.style.display = "none";
-
     status.innerHTML = `
       <div class="status-card">
-        <strong>⚠️ Menu belum di upload untuk hari ini</strong>
-        <span>
-          Menu untuk tanggal <b>${formatDate(selectedDate)}</b>
-          belum diunggah oleh admin.
-        </span>
-        <span class="admin-hint">
-          Admin dapat menambahkan atau memperbarui menu melalui website khusus admin.
-        </span>
+        <strong>⚠️ Menu belum di-upload untuk hari ini</strong>
+        <span>Menu untuk tanggal <b>${formatDate(selectedDate)}</b> belum diunggah oleh admin.</span>
         <a class="admin-link" href="${ORG.adminLink}">🔐 Buka Website Admin</a>
       </div>
     `;
-
-    document.getElementById("giziBody").innerHTML = "";
     return;
   }
 
   grid.style.display = "grid";
-
-  photoWrap.innerHTML =
-    `<img class="food-photo" id="foodPhoto" src="${data.foto || ""}" alt="Foto menu ${formatDate(selectedDate)}">`;
+  photoWrap.innerHTML = `<img class="food-photo" src="${data.foto_url || ''}" alt="Foto menu">`;
 
   grid.innerHTML = `
     <div class="menu-item full"><div class="label">NASI</div><div class="value">${data.nasi || "-"}</div></div>
@@ -681,16 +319,19 @@ function renderMenu(data){
     <div class="menu-item full"><div class="label">BUAH</div><div class="value">${data.buah || "-"}</div></div>
   `;
 
-  const body = document.getElementById("giziBody");
-  body.innerHTML = "";
+  const giziData = {
+    energi:      { kecil: data.energi_kecil, besar: data.energi_besar },
+    protein:     { kecil: data.protein_kecil, besar: data.protein_besar },
+    lemak:       { kecil: data.lemak_kecil, besar: data.lemak_besar },
+    karbohidrat: { kecil: data.karbo_kecil, besar: data.karbo_besar },
+    serat:       { kecil: data.serat_kecil, besar: data.serat_besar }
+  };
 
-  Object.keys(LABELS).forEach(key => {
-    const row = data.gizi?.[key];
-    if(!row) return;
-
+  Object.keys(LABELS).forEach(k => {
+    const row = giziData[k];
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td class="label">${LABELS[key]}</td>
+      <td class="label">${LABELS[k]}</td>
       <td class="num">${fmt(row.kecil)}</td>
       <td class="num">${fmt(row.besar)}</td>
     `;
@@ -700,16 +341,9 @@ function renderMenu(data){
 
 function showDate(date){
   selectedDate = new Date(date);
-  const key = localDateKey(selectedDate);
-
   renderDateNavigation();
-  renderMenu(MENU[key]);
-
-  // Scroll sedikit ke kartu menu setelah memilih tanggal.
-  document.querySelector(".card").scrollIntoView({
-    behavior:"smooth",
-    block:"start"
-  });
+  renderMenu();
+  renderWeekRow();
 }
 
 document.getElementById("prevDay").addEventListener("click", () => {
@@ -724,8 +358,6 @@ document.getElementById("nextDay").addEventListener("click", () => {
   showDate(d);
 });
 
-// Baris pemilih minggu sekarang dibuat informatif untuk minggu berjalan,
-// tetapi tanggal utama tetap dapat diakses SETIAP HARI.
 function renderWeekRow(){
   const row = document.getElementById("weekRow");
   row.innerHTML = "";
@@ -741,23 +373,15 @@ function renderWeekRow(){
     const key = localDateKey(d);
     const btn = document.createElement("button");
     btn.className = "day-btn" + (key === localDateKey(selectedDate) ? " active" : "");
-    btn.innerHTML =
-      `<div class="d-name">${dayName(d).slice(0,3).toUpperCase()}</div>
-       <div class="d-num">${d.getDate()}</div>`;
+    btn.innerHTML = `<div class="d-name">${dayName(d).slice(0,3).toUpperCase()}</div><div class="d-num">${d.getDate()}</div>`;
 
     btn.addEventListener("click", () => showDate(d));
     row.appendChild(btn);
   }
 }
 
-renderFooter();
-renderBeneficiaries();
-renderWarning();
-renderWeekRow();
-
-// Otomatis membuka tanggal HARI INI setiap kali website dibuka.
+renderStaticInfo();
 showDate(new Date());
-
 </script>
 
 </body>

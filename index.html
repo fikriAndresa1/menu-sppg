@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu Bergizi Hari Ini</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#16204a;
+    --navy-2:#1f2d63;
+    --navy-3:#263a7d;
+    --amber:#f2a93b;
+    --amber-dark:#c9861d;
+    --red:#a83a2e;
+    --red-bg:#fbeae7;
+    --paper:#f4f5fb;
+    --white:#ffffff;
+    --text:#20233a;
+    --muted:#6b7089;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Plus Jakarta Sans", system-ui, sans-serif;
+    background:var(--paper);
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    padding:24px 12px 60px;
+  }
+  .phone{
+    width:100%;
+    max-width:420px;
+  }
+
+  /* ---------- Header lembaga ---------- */
+  .agency-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin-bottom:16px;
+    flex-wrap:wrap;
+  }
+  .agency-row img{ height:34px; }
+  .agency-placeholder{
+    height:34px;
+    width:34px;
+    border-radius:50%;
+    background:var(--navy-2);
+    color:#fff;
+    font-size:10px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    line-height:1.1;
+  }
+
+  /* ---------- Kartu utama ---------- */
+  .card{
+    background:var(--navy);
+    border-radius:28px;
+    padding:22px 18px 26px;
+    color:#fff;
+    box-shadow:0 20px 40px -18px rgba(22,32,74,.55);
+  }
+  .org-name{
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.2px;
+    opacity:.85;
+  }
+  .org-sub{
+    font-size:11px;
+    color:#aab2d8;
+    margin-top:2px;
+  }
+  .day-title{
+    font-size:28px;
+    font-weight:800;
+    margin:14px 0 2px;
+  }
+  .date-sub{
+    font-size:13px;
+    color:#c4cae8;
+    margin-bottom:16px;
+  }
+
+  .food-photo{
+    width:100%;
+    aspect-ratio:4/3;
+    border-radius:16px;
+    object-fit:cover;
+    background:#0e1636 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%231b2454'/%3E%3C/svg%3E");
+    display:block;
+  }
+
+  .menu-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:14px;
+  }
+  .menu-item{
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:10px 12px;
+  }
+  .menu-item.full{ grid-column:1 / -1; }
+  .menu-item .label{
+    font-size:10.5px;
+    color:#a9b0d6;
+    margin-bottom:3px;
+  }
+  .menu-item .value{
+    font-size:13.5px;
+    font-weight:600;
+    line-height:1.3;
+  }
+
+  /* ---------- Tabel gizi ---------- */
+  .gizi-box{
+    margin-top:16px;
+    background:var(--navy-2);
+    border-radius:16px;
+    padding:14px 14px 8px;
+  }
+  .gizi-title{
+    font-size:11.5px;
+    font-weight:700;
+    color:#dfe3f7;
+    margin-bottom:10px;
+  }
+  table.gizi{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  table.gizi th{
+    text-align:right;
+    font-size:9.5px;
+    font-weight:700;
+    color:#aab2d8;
+    padding-bottom:8px;
+  }
+  table.gizi th:first-child, table.gizi td:first-child{ text-align:left; }
+  table.gizi th span{ display:block; font-weight:400; color:#8890b8; font-size:9px; }
+  table.gizi td{
+    padding:7px 0;
+    border-top:1px solid rgba(255,255,255,.08);
+  }
+  table.gizi td.label{ color:#c4cae8; font-size:11.5px; }
+  table.gizi td.num{
+    text-align:right;
+    font-weight:700;
+    color:var(--amber);
+    font-size:14.5px;
+  }
+
+  /* ---------- Pilih hari ---------- */
+  .week-row{
+    display:flex;
+    justify-content:space-between;
+    margin-top:16px;
+    gap:6px;
+  }
+  .day-btn{
+    flex:1;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;
+    padding:8px 0;
+    text-align:center;
+    cursor:pointer;
+    color:#c4cae8;
+    transition:background .15s ease, color .15s ease;
+  }
+  .day-btn .d-name{ font-size:9.5px; font-weight:700; }
+  .day-btn .d-num{ font-size:13px; font-weight:700; margin-top:2px; }
+  .day-btn.active{
+    background:var(--amber);
+    color:var(--navy);
+    border-color:var(--amber);
+  }
+  .day-btn:disabled{ opacity:.35; cursor:default; }
+
+  /* ---------- Peringatan ---------- */
+  .warning{
+    margin-top:16px;
+    background:var(--red-bg);
+    border:1px solid #f0c9c1;
+    border-radius:16px;
+    padding:14px 14px 12px;
+    color:#5a2018;
+  }
+  .warning-head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12.5px;
+    font-weight:800;
+    color:var(--red);
+    margin-bottom:10px;
+  }
+  .warning-head .icon{
+    width:20px; height:20px;
+    border-radius:50%;
+    background:var(--red);
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:800;
+  }
+  .warning ol{
+    margin:0; padding-left:18px;
+  }
+  .warning li{
+    font-size:12.5px;
+    line-height:1.5;
+    margin-bottom:8px;
+  }
+  .warning li b{ display:block; color:var(--red); font-size:12.5px; }
+  .warning li:last-child{ margin-bottom:0; }
+
+  /* ---------- Footer ---------- */
+  .foot{
+    text-align:center;
+    margin-top:18px;
+    font-size:11px;
+    color:var(--muted);
+    line-height:1.6;
+  }
+  .foot b{ color:var(--text); }
+  .foot a{ color:var(--navy-3); text-decoration:none; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <div class="agency-row" id="agencyRow">
+    <!-- Ganti dengan <img src="logo1.png"> dst kalau sudah punya file logo resmi -->
+    <div class="agency-placeholder">BGN</div>
+    <div class="agency-placeholder">SPPG</div>
+    <div class="agency-placeholder">SLHS</div>
+    <div class="agency-placeholder">ID</div>
+  </div>
+
+  <div class="card">
+    <div class="org-name" id="orgName">SPPG TANGEKRANG LABUAI 2</div>
+    <div class="org-sub" id="orgSub">Yayasan Riau Center Bhakti Negeri</div>
+
+    <div class="day-title" id="dayTitle">Kamis</div>
+    <div class="date-sub" id="dateSub">27 Agustus 2026</div>
+
+    <img class="food-photo" id="foodPhoto" src="" alt="Foto menu hari ini">
+
+    <div class="menu-grid" id="menuGrid"></div>
+
+    <div class="gizi-box">
+      <div class="gizi-title">KANDUNGAN GIZI PER PORSI</div>
+      <table class="gizi">
+        <thead>
+          <tr>
+            <th></th>
+            <th>KECIL<span>PAUD–SD3</span></th>
+            <th>BESAR<span>SD4–SMA</span></th>
+          </tr>
+        </thead>
+        <tbody id="giziBody"></tbody>
+      </table>
+    </div>
+
+    <div class="week-row" id="weekRow"></div>
+
+    <div class="warning">
+      <div class="warning-head"><span class="icon">!</span> WAJIB DIPERHATIKAN &amp; DISOSIALISASIKAN</div>
+      <ol id="warningList"></ol>
+    </div>
+  </div>
+
+  <div class="foot">
+    Disiapkan di dapur <b id="footOrg">SPPG TANGKERANG LABUAI 2 </b><br>
+    <span id="footYayasan">Yayasan Riau Center Bhakti Negeri</span> — Program Makan Bergizi Gratis<br>
+    <a href="#" id="footLink"></a>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   1. DATA — INI SATU-SATUNYA BAGIAN YANG PERLU KAMU EDIT
+   ========================================================= */
+const ORG = {
+  nama: "SPPG TANGKERANG LABUAI 2",
+  yayasan: "Yayasan Riau Center Bhakti Negeri",
+  link: "namakamu.github.io"
+};
+
+// urutan hari yang ditampilkan di baris pemilih hari (Senin–Sabtu)
+const HARI = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+
+// data menu per hari. Tambah / ubah sesuai menu mingguan dapurmu.
+const MENU = {
+  "Senin": null, // null = belum diisi -> tombol akan nonaktif
+  "Selasa": null,
+  "Rabu": null,
+  "Kamis": {
+    tanggal: "27 Agustus 2026",
+    foto: "https://placehold.co/600x450/0e1636/ffffff?text=Foto+Menu",
+    nasi: "Nasi Putih",
+    hewani: "Dimsum Ayam",
+    nabati: "Tempe Oreg",
+    sayur: "Sayur Bening Labu Kuning, Kacang Panjang",
+    buah: "Jeruk Madu Siam",
+    gizi: {
+      energi:     { kecil: 550,   besar: 750   },
+      protein:    { kecil: 20.1,  besar: 28.4  },
+      lemak:      { kecil: 15.13, besar: 25.03 },
+      karbohidrat:{ kecil: 71.04, besar: 96.58 },
+      serat:      { kecil: 3.21,  besar: 4.49  }
+    }
+  },
+  "Jumat": null,
+  "Sabtu": null
+};
+
+// aturan yang tampil di kotak merah — silakan sesuaikan redaksinya
+const PERINGATAN = [
+  {
+    judul: "Segera dimakan di sekolah",
+    isi: "Makanan wajib dikonsumsi paling lambat 4 jam setelah ompreng diterima, tanpa dimasak atau diolah ulang."
+  },
+  {
+    judul: "Jangan dibawa pulang",
+    isi: "Makanan yang dibawa pulang cepat basi dan berisiko menyebabkan sakit perut atau keracunan."
+  },
+  {
+    judul: "Ompreng dikembalikan ke petugas",
+    isi: "Setelah selesai makan, segera kembalikan ompreng dalam keadaan bersih ke petugas SPPG."
+  }
+];
+
+const HARI_INI_DEFAULT = "Kamis";
+
+/* =========================================================
+   2. RENDER — tidak perlu diubah
+   ========================================================= */
+const fmt = n => Number(n).toLocaleString("id-ID", {minimumFractionDigits: n % 1 === 0 ? 0 : 2, maximumFractionDigits: 2});
+
+const LABELS = {
+  energi: "Energi (kkal)",
+  protein: "Protein (g)",
+  lemak: "Lemak (g)",
+  karbohidrat: "Karbohidrat (g)",
+  serat: "Serat (g)"
+};
+
+function renderFooter(){
+  document.getElementById("orgName").textContent = ORG.nama;
+  document.getElementById("orgSub").textContent = ORG.yayasan;
+  document.getElementById("footOrg").textContent = ORG.nama;
+  document.getElementById("footYayasan").textContent = ORG.yayasan;
+  const link = document.getElementById("footLink");
+  link.textContent = ORG.link;
+  link.href = ORG.link.startsWith("http") ? ORG.link : "https://" + ORG.link;
+}
+
+function renderWarning(){
+  const ol = document.getElementById("warningList");
+  ol.innerHTML = "";
+  PERINGATAN.forEach(p => {
+    const li = document.createElement("li");
+    li.innerHTML = `<b>${p.judul}</b>${p.isi}`;
+    ol.appendChild(li);
+  });
+}
+
+function renderWeekRow(activeDay){
+  const row = document.getElementById("weekRow");
+  row.innerHTML = "";
+  HARI.forEach((hari, i) => {
+    const btn = document.createElement("button");
+    btn.className = "day-btn" + (hari === activeDay ? " active" : "");
+    btn.disabled = !MENU[hari];
+    btn.innerHTML = `<div class="d-name">${hari.slice(0,3).toUpperCase()}</div><div class="d-num">${24 + i}</div>`;
+    btn.addEventListener("click", () => showDay(hari));
+    row.appendChild(btn);
+  });
+}
+
+function showDay(hari){
+  const data = MENU[hari];
+  if(!data) return;
+
+  document.getElementById("dayTitle").textContent = hari;
+  document.getElementById("dateSub").textContent = data.tanggal;
+  document.getElementById("foodPhoto").src = data.foto;
+
+  const grid = document.getElementById("menuGrid");
+  grid.innerHTML = `
+    <div class="menu-item full"><div class="label">NASI</div><div class="value">${data.nasi}</div></div>
+    <div class="menu-item"><div class="label">LAUK HEWANI</div><div class="value">${data.hewani}</div></div>
+    <div class="menu-item"><div class="label">LAUK NABATI</div><div class="value">${data.nabati}</div></div>
+    <div class="menu-item full"><div class="label">SAYUR</div><div class="value">${data.sayur}</div></div>
+    <div class="menu-item full"><div class="label">BUAH</div><div class="value">${data.buah}</div></div>
+  `;
+
+  const body = document.getElementById("giziBody");
+  body.innerHTML = "";
+  Object.keys(LABELS).forEach(key => {
+    const row = data.gizi[key];
+    if(!row) return;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="label">${LABELS[key]}</td>
+      <td class="num">${fmt(row.kecil)}</td>
+      <td class="num">${fmt(row.besar)}</td>
+    `;
+    body.appendChild(tr);
+  });
+
+  renderWeekRow(hari);
+}
+
+renderFooter();
+renderWarning();
+showDay(HARI_INI_DEFAULT);
+</script>
+
+</body>
+</html>
